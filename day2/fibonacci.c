@@ -2,6 +2,16 @@
 
 #define MOD 1000000007
 
+int memo[100] = {1,1};
+
+// 동적 계획법 (Dynamic Programming) 사용.
+int DPFib(int n) {
+    if (n<2) return n;
+    if ((memo[n])) return memo[n];
+    memo[n] = DPFib(n-1) + DPFib(n-2);
+    return memo[n];
+}
+
 // 같은 함수를 여러번 호출하게 되어 비효율적. O(2^n)
 int RecursiveFib(int n) { 
     if (n == 0) return 0;
@@ -70,6 +80,7 @@ int main(void) {
 
     printf("result = %d\n", RecursiveFib(a));
     printf("result = %d\n", IterativeFib(a));
+    printf("result = %d\n", DPFib(a));
     printf("result = %d", DivideFib(a));
     return 0;
 }
