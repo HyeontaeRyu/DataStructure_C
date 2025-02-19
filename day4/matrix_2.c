@@ -21,9 +21,38 @@ SparseMatrix matrix_transpose(SparseMatrix a) {
     b.cols = a.rows;
     b.rows = a.cols;
     b.terms = a.terms;
-    
-    for (int i = bindex; i < a.terms; i++) {
-        
+
+    if (a.terms > 0) {
+        for (int c = 0; c < a.cols; c++){
+            for (int i = 0; i < a.terms; i++) {
+                if (c == a.data[i].col) {
+                    b.data[bindex].col = a.data[i].row;
+                    b.data[bindex].row = a.data[i].col;
+                    b.data[bindex].value = a.data[i].value;
+                    bindex++;
+                }                
+            }
+        }
     }
-    
+    return b;
+}
+
+void print_matrix(SparseMatrix a) {
+    printf("==================\n");
+    for (int i = 0; i < a.terms; i++) {
+        printf("(%d, %d, %d)\n", a.data[i].row, a.data[i].col, a.data[i].value);
+    }
+    printf("==================\n");
+}
+
+int main(int argc, char const *argv[]) {
+    SparseMatrix m = {
+        { {0, 3, 7}, {1, 0, 9}, {1, 5, 8}, {3, 0, 6}, {3, 1, 5}, {4, 5, 1}, {5, 2, 2} },
+        6,
+        6,
+        7
+    };
+    SparseMatrix result = matrix_transpose(m);
+    print_matrix(result);
+    return 0;
 }
