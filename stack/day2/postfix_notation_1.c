@@ -46,38 +46,42 @@ element peek(CheckStack *s) {
     } else return s->data[(s->top)];
 }
 
-int checkMatching(const char *c) {
+int eval(char exp[]) {
+    int op1, op2, value, i = 0;
+    int len = strlen(exp);
+    char ch;
     CheckStack s;
-    char ch, openCh;
-    int i, n = strlen(c);
+
     stackInit(&s);
 
-    for (i = 0; i < n; i++) {
-        ch = c[i];
-        switch (ch) {
-        case '(': case '{': case '[':
-            push(&s, ch);
-            break;
-        case ')': case '}': case ']':
-            if (isEmpty(&s)) return 0;
-            else {
-                openCh = pop(&s);
-                if ((openCh == '(' && ch != ')') || 
-                    (openCh == '{' && ch != '}') || 
-                    (openCh == '[' && ch != ']')) return 0;
+    for (i = 0; i < len; i++) {
+        ch = exp[i];
+        if (ch != '+' && ch != '-' && ch != '*' && ch != '/' && ch != '%') {
+            value = ch - '0';
+            push(&s, value);
+        } else {
+            op2 = pop(&s);
+            op1 = pop(&s);
+            switch (ch) {
+            case '*':
+                push(&s, op1 * op2); break;
+            case '/':
+                push(&s, op1 / op2); break;
+            case '-':
+                push(&s, op1 - op2); break;
+            case '+':
+                push(&s, op1 + op2); break;
+            case '%':
+                push(&s, op1 % op2); break;
             }
-            break;
         }
     }
-    if (!isEmpty(&s)) return 0;
-    return 1;
-} 
+    return pop(&s);
+}
 
 int main(int argc, char const *argv[]) {
-    char *p = "{ A[(i+1)] = 0; }";
-    if (checkMatching(p) == 1)
-        printf("%s 괄호 검사 성공.", p);
-    else 
-        printf("%s 괄호 검사 실패.", p);
+    int result;
+    result = eval("82/3-32*+");
+    printf("%d", result);
     return 0;
 }
