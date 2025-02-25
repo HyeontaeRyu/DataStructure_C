@@ -18,7 +18,7 @@ void initStack(Stack *s) {
 }
 
 int isEmpty(Stack *s) {
-   return s->top == -1; 
+    return s->top == -1; 
 }
 
 int isFull(Stack *s) {
@@ -61,7 +61,7 @@ int checkPalindrome(char *s) {
         if (s[i] >= 'A' && s[i] <= 'z') {
             if (pop(&s1) != tolower(s[i])) {
                 free(s1.data);
-             return 0;
+                return 0;
             }
         }
     }
