@@ -67,7 +67,7 @@ char maze[MAZE_SIZE][MAZE_SIZE] = {
 
 void pushLoc(Stack *s, int r, int c) {
     if (r < 0 || c < 0) return;
-    if (maze[r][c] == '1' || maze[r][c] == '.') {
+    if (maze[r][c] != '1' && maze[r][c] != '.') {
         element tmp;
         tmp.c = c;
         tmp.r = r;
@@ -85,11 +85,19 @@ void printMaze(char maze[MAZE_SIZE][MAZE_SIZE]) {
     }
 }
 
+element move(Stack *s, Stack *routeTrace) {
+    push(routeTrace, pop(s));
+    return peek(routeTrace);
+}
+
 int main(int argc, char const *argv[]) {
     int r, c;
-    Stack s;
+    Stack s, routeTrace, tmp;
+
 
     initStack(&s);
+    initStack(&routeTrace);
+    initStack(&tmp);
     here = entry;
     while (maze[here.r][here.c] != 'x') {
         r = here.r;
@@ -104,8 +112,20 @@ int main(int argc, char const *argv[]) {
             fprintf(stderr, "실패!");
             exit(1);
         } else 
-            here = pop(&s);
+            here = move(&s, &tmp);
     }
-    printf("성공!");
+    while (!isEmpty(&tmp)) {
+        push(&routeTrace, pop(&tmp));
+    }
+    while (!isEmpty(&routeTrace)) {
+        element etmp = pop(&routeTrace);
+        printf("(%d, %d) ", etmp.r, etmp.c);
+    }
+    
+
+    free(s.data);
+    free(routeTrace.data);
+    free(tmp.data);
+    printf("\n성공!");
     return 0;
 }
